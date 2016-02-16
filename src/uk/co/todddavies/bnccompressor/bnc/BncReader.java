@@ -1,4 +1,4 @@
-package uk.co.todddavies.bnccompressor;
+package uk.co.todddavies.bnccompressor.bnc;
 
 import java.io.Closeable;
 import java.io.FileNotFoundException;
@@ -9,13 +9,15 @@ import java.util.Scanner;
 
 import com.google.common.collect.ImmutableList;
 
-public final class BncReader implements Iterator<ImmutableList<WordTag>>, Closeable {
+import uk.co.todddavies.bnccompressor.WordTag;
+
+final class BncReader implements Iterator<ImmutableList<WordTag>>, Closeable {
 
   private static final String SENT_START = "<p>";
   
   private Scanner fileScanner;
   
-  public BncReader(Path filePath) throws FileNotFoundException {
+  BncReader(Path filePath) throws FileNotFoundException {
     fileScanner = new Scanner(filePath.toFile());
     // Move the scanner past the first <p> tag
     if (fileScanner.hasNextLine()) {

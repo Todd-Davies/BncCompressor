@@ -1,41 +1,46 @@
-package uk.co.todddavies.bnccompressor.MappingBuilder;
+package uk.co.todddavies.bnccompressor.mapping.builder;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
 import edu.uchicago.lowasser.flaginjection.Flags;
-import uk.co.todddavies.bnccompressor.BncHelper;
-import uk.co.todddavies.bnccompressor.BncReader;
 import uk.co.todddavies.bnccompressor.WordTag;
+import uk.co.todddavies.bnccompressor.bnc.BncIterator;
+import uk.co.todddavies.bnccompressor.bnc.BncModule;
 
 public final class MappingBuilder {
   
   private static final Charset CHARSET = Charset.defaultCharset();
   
   private long wordCount = 1, tagCount = 1;
-  private HashMap<String, Long> wordMap, tagMap;
+  private final HashMap<String, Long> wordMap, tagMap;
+  private final BncIterator iterator;
   
   @Inject
-  private MappingBuilder() {
+  private MappingBuilder(BncIterator iterator) {
     wordMap = new HashMap<>();
     tagMap = new HashMap<>();
+    this.iterator = iterator;
   }
   
   public static void main(String[] args) {    
     // Create the injector
     Injector injector = Flags.bootstrapFlagInjector(args,
         MappingBuilder.class.getName(),
-        ImmutableList.<String>of("uk.co.todddavies.bnccompressor"),
+        ImmutableList.<String>of(
+            "uk.co.todddavies.bnccompressor.bnc",
+            "uk.co.todddavies.bnccompressor.mapping.builder"),
+        new BncModule(),
         new MappingBuilderModule());
     
     MappingBuilder mappingBuilder = injector.getInstance(MappingBuilder.class);
@@ -64,18 +69,12 @@ public final class MappingBuilder {
   }
 
   public void buildMap() {
-    for(Path bncFile : BncHelper.getBncFiles(MappingBuilderFlags.getPath())) {
-      log(String.format("Processing %s", bncFile.toUri()));
-      try(BncReader reader = new BncReader(bncFile)) {
-        while(reader.hasNext()) {
-          for (WordTag wordTag : reader.next()) {
-             if (!wordMap.containsKey(wordTag.word)) wordMap.put(wordTag.word, wordCount++);
-             String tag = MappingBuilderFlags.shouldCollapseTags() ? wordTag.tag.substring(0,2) : wordTag.tag;
-             if (!tagMap.containsKey(tag)) tagMap.put(tag, tagCount++);
-          }
-        }
-      } catch (IOException e) {
-        e.printStackTrace();
+    log("Building word and tag maps...");
+    while(iterator.hasNext()) {
+      for (WordTag wordTag : iterator.next()) {
+        if (!wordMap.containsKey(wordTag.word)) wordMap.put(wordTag.word, wordCount++);
+        String tag = MappingBuilderFlags.shouldCollapseTags() ? wordTag.tag.substring(0,2) : wordTag.tag;
+        if (!tagMap.containsKey(tag)) tagMap.put(tag, tagCount++);
       }
     }
   }

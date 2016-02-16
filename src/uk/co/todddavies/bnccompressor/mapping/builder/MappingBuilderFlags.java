@@ -1,4 +1,4 @@
-package uk.co.todddavies.bnccompressor.MappingBuilder;
+package uk.co.todddavies.bnccompressor.mapping.builder;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -11,7 +11,7 @@ import com.google.inject.Inject;
 import edu.uchicago.lowasser.flaginjection.Flag;
 import edu.uchicago.lowasser.flaginjection.FlagsClass;
 
-public class MappingBuilderFlags extends FlagsClass {
+class MappingBuilderFlags extends FlagsClass {
 
   private static Path path, tagPath, wordPath;
   private static boolean quiet = false, collapseTags = false;
@@ -31,7 +31,8 @@ public class MappingBuilderFlags extends FlagsClass {
       MappingBuilderFlags.quiet = quiet;
     }
     if (collapseTags != null) {
-      MappingBuilderFlags.collapseTags = collapseTags;
+      if (collapseTags) System.err.println("Collapsing tags disabled until the encoder can deal with it too!");
+      //MappingBuilderFlags.collapseTags = collapseTags;
     }
   }
 

@@ -1,4 +1,4 @@
-package uk.co.todddavies.bnccompressor;
+package uk.co.todddavies.bnccompressor.bnc;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
