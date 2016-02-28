@@ -14,6 +14,7 @@ import edu.uchicago.lowasser.flaginjection.Flags;
 import uk.co.todddavies.bnccompressor.WordTag;
 import uk.co.todddavies.bnccompressor.bnc.BncIterator;
 import uk.co.todddavies.bnccompressor.bnc.BncModule;
+import uk.co.todddavies.bnccompressor.flags.BncGlobalFlagsModule;
 import uk.co.todddavies.bnccompressor.mapping.reader.MappingReaderModule;
 import uk.co.todddavies.bnccompressor.mapping.reader.MappingReaderModule.TagMap;
 import uk.co.todddavies.bnccompressor.mapping.reader.MappingReaderModule.WordMap;
@@ -32,11 +33,13 @@ public final class BncEncoder {
         BncEncoder.class.getName(),
         ImmutableList.<String>of(
             "uk.co.todddavies.bnccompressor.encoder",
+            "uk.co.todddavies.bnccompressor.flags",
             "uk.co.todddavies.bnccompressor.bnc",
             "uk.co.todddavies.bnccompressor.mapping.reader"),
         new BncEncoderModule(),
         new BncModule(),
-        new MappingReaderModule());
+        new MappingReaderModule(),
+        new BncGlobalFlagsModule());
     
     BncEncoder bncEncoder = injector.getInstance(BncEncoder.class);
     bncEncoder.encode();

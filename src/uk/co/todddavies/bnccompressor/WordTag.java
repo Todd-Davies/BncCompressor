@@ -20,5 +20,13 @@ public final class WordTag {
   
   public static WordTag from(String word, String tag) {
     return new WordTag(word, tag);
-  }  
+  }
+  
+  @Override
+  public boolean equals(Object other) {
+    if (other instanceof WordTag) {
+      WordTag wt = (WordTag) other;
+      return word.equals(wt.word) && tag.equals(wt.tag); 
+    } else return false;
+  }
 }

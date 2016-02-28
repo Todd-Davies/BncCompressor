@@ -15,6 +15,7 @@ public final class BncModule extends AbstractModule {
   @Override
   protected void configure() {
     install(Flags.flagBindings(BncFlags.class));
+    bind(BncIterator.class).to(BncIteratorImpl.class);
   }
   
   @Provides

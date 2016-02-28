@@ -17,6 +17,7 @@ import edu.uchicago.lowasser.flaginjection.Flags;
 import uk.co.todddavies.bnccompressor.WordTag;
 import uk.co.todddavies.bnccompressor.bnc.BncIterator;
 import uk.co.todddavies.bnccompressor.bnc.BncModule;
+import uk.co.todddavies.bnccompressor.flags.BncGlobalFlagsModule;
 
 public final class MappingBuilder {
   
@@ -38,17 +39,16 @@ public final class MappingBuilder {
     Injector injector = Flags.bootstrapFlagInjector(args,
         MappingBuilder.class.getName(),
         ImmutableList.<String>of(
+            "uk.co.todddavies.bnccompressor.bnc.flags",
             "uk.co.todddavies.bnccompressor.bnc",
             "uk.co.todddavies.bnccompressor.mapping.builder"),
         new BncModule(),
+        new BncGlobalFlagsModule(),
         new MappingBuilderModule());
     
     MappingBuilder mappingBuilder = injector.getInstance(MappingBuilder.class);
     mappingBuilder.buildMap();
-    log(String.format("Writing words to %s", MappingBuilderFlags.getWordFile().toURI()));
-    writeMap(MappingBuilderFlags.getWordFile(), mappingBuilder.wordMap);
-    log(String.format("Writing tags to %s", MappingBuilderFlags.getTagFile().toURI()));
-    writeMap(MappingBuilderFlags.getTagFile(), mappingBuilder.tagMap);
+    mappingBuilder.writeMaps();
     log("Done!");
   }
   
@@ -66,6 +66,13 @@ public final class MappingBuilder {
     if (!MappingBuilderFlags.isQuiet()) {
       System.out.println(text);
     }
+  }
+  
+  public void writeMaps() {
+    log(String.format("Writing words to %s", MappingBuilderFlags.getWordFile().toURI()));
+    writeMap(MappingBuilderFlags.getWordFile(), wordMap);
+    log(String.format("Writing tags to %s", MappingBuilderFlags.getTagFile().toURI()));
+    writeMap(MappingBuilderFlags.getTagFile(), tagMap);
   }
 
   public void buildMap() {

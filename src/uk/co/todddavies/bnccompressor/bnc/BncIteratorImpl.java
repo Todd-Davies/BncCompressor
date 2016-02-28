@@ -10,17 +10,23 @@ import com.google.inject.Inject;
 
 import uk.co.todddavies.bnccompressor.WordTag;
 import uk.co.todddavies.bnccompressor.bnc.BncModule.BncPath;
+import uk.co.todddavies.bnccompressor.flags.BncGlobalFlagsModule.Quiet;
 
 final class BncIteratorImpl implements BncIterator {
 
-  private Stack<Path> bncDirectories;
+  private final Stack<Path> bncDirectories;
+  private final boolean quiet;
   private BncReader currentReader;
   
+  private ImmutableList<WordTag> nextSentence = null;
+  
   @Inject
-  private BncIteratorImpl(@BncPath Path bncPath) {
+  private BncIteratorImpl(@BncPath Path bncPath, @Quiet boolean quiet) {
     bncDirectories = new Stack<>();
     bncDirectories.push(bncPath);
     currentReader = null;
+    this.quiet = quiet;
+    next();
   }
   
   @Override
@@ -28,17 +34,38 @@ final class BncIteratorImpl implements BncIterator {
     if (currentReader != null) {
       currentReader.close();
       currentReader = null;
-      bncDirectories.clear();;
+      bncDirectories.clear();
     }
   }
 
   @Override
   public boolean hasNext() {
-    return (currentReader != null && currentReader.hasNext()) || !bncDirectories.isEmpty();
+    return nextSentence != null;
   }
 
   @Override
   public ImmutableList<WordTag> next() {
+    ImmutableList<WordTag> sentence = null;
+    while(((currentReader != null && currentReader.hasNext()) || !bncDirectories.isEmpty())
+        && sentence == null) {
+      sentence = nextSentence();
+      if (BncFlags.shouldStripLong()) {
+        if (sentence.size() > BncFlags.getStripLong()) {
+          sentence = null;
+        }
+      }
+      if (sentence != null && BncFlags.shouldStripShort()) {
+        if (sentence.size() < BncFlags.getStripShort()) {
+          sentence = null;
+        }
+      }
+    }
+    ImmutableList<WordTag> output = nextSentence;
+    nextSentence = sentence;
+    return output;
+  }
+  
+  private ImmutableList<WordTag> nextSentence() {
     if (currentReader == null || !currentReader.hasNext()) {
       try {
         Path nextPath = null;
@@ -54,7 +81,9 @@ final class BncIteratorImpl implements BncIterator {
           }
         }
         if (currentReader != null) currentReader.close();
-        System.out.printf("Opening %s\n", nextPath.toUri());
+        if (!quiet) {
+          System.out.printf("Opening %s\n", nextPath.toUri());
+        }
         currentReader = new BncReader(nextPath);
       } catch (IOException e) {
         // Convert to runtime exception to be caught higher up

@@ -1,4 +1,4 @@
-package uk.co.todddavies.bnccompressor.decoder;
+package uk.co.todddavies.bnccompressor.decoder.reader;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

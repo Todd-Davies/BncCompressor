@@ -17,7 +17,7 @@ import com.google.inject.Injector;
 import edu.uchicago.lowasser.flaginjection.Flags;
 import uk.co.todddavies.bnccompressor.WordTag;
 import uk.co.todddavies.bnccompressor.bnc.BncIterator;
-import uk.co.todddavies.bnccompressor.decoder.BncDecoderModule;
+import uk.co.todddavies.bnccompressor.decoder.reader.BncDecoderModule;
 import uk.co.todddavies.bnccompressor.mapping.reader.MappingReaderModule;
 import uk.co.todddavies.bnccompressor.mapping.reader.MappingReaderModule.TagMap;
 import uk.co.todddavies.bnccompressor.mapping.reader.MappingReaderModule.WordMap;
@@ -47,7 +47,7 @@ public final class TagMapGenerator {
         ImmutableList.<String>of(
             "uk.co.todddavies.bnccompressor.mapping.reader",
             "uk.co.todddavies.bnccompressor.tagmapping",
-            "uk.co.todddavies.bnccompressor.decoder"),
+            "uk.co.todddavies.bnccompressor.decoder.reader"),
         new MappingReaderModule(),
         new BncDecoderModule(),
         new MapGeneratorModule());
@@ -76,6 +76,8 @@ public final class TagMapGenerator {
   
   public void writeMap() {
     try (BufferedWriter writer = Files.newWriter(MapGeneratorFlags.getPath().toFile(), CHARSET)) {
+      // Unknown word; unknown tag
+      writer.write(String.format("%d %d%n", -1, -1));
       for (Long wordId : map.rowKeySet()) {
         Entry<Long, Integer> min = null;
         for (Entry<Long, Integer> entry : map.row(wordId).entrySet()) {
