@@ -5,6 +5,6 @@ import java.util.Iterator;
 
 import com.google.common.collect.ImmutableList;
 
-import uk.co.todddavies.bnccompressor.WordTag;
+import uk.co.todddavies.bnccompressor.TokenTag;
 
-public interface BncIterator extends Iterator<ImmutableList<WordTag>>, Closeable {}
+public interface BncIterator extends Iterator<ImmutableList<TokenTag>>, Closeable {}

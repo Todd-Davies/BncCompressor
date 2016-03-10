@@ -10,7 +10,7 @@ import org.junit.Test;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Injector;
 import edu.uchicago.lowasser.flaginjection.Flags;
-import uk.co.todddavies.bnccompressor.WordTag;
+import uk.co.todddavies.bnccompressor.TokenTag;
 import uk.co.todddavies.bnccompressor.bnc.BncIterator;
 import uk.co.todddavies.bnccompressor.decoder.reader.BncDecoder;
 import uk.co.todddavies.bnccompressor.decoder.reader.BncDecoderModule;
@@ -60,7 +60,7 @@ public class EndToEndEncoderDecodeTest {
     while (decoder.hasNext() || fakeBnc.hasNext()) {
       if (decoder.hasNext() != fakeBnc.hasNext()) fail();
       else {
-        Iterator<WordTag> fake = fakeBnc.next().iterator(), decoded = decoder.next().iterator();
+        Iterator<TokenTag> fake = fakeBnc.next().iterator(), decoded = decoder.next().iterator();
         while(fake.hasNext() && decoded.hasNext()) {
           assertEquals(fake.next(), decoded.next());
         }

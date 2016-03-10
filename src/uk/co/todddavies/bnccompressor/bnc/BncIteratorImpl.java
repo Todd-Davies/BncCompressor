@@ -8,7 +8,7 @@ import java.util.Stack;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 
-import uk.co.todddavies.bnccompressor.WordTag;
+import uk.co.todddavies.bnccompressor.TokenTag;
 import uk.co.todddavies.bnccompressor.bnc.BncModule.BncPath;
 import uk.co.todddavies.bnccompressor.flags.BncGlobalFlagsModule.Quiet;
 
@@ -18,7 +18,7 @@ final class BncIteratorImpl implements BncIterator {
   private final boolean quiet;
   private BncReader currentReader;
   
-  private ImmutableList<WordTag> nextSentence = null;
+  private ImmutableList<TokenTag> nextSentence = null;
   
   @Inject
   private BncIteratorImpl(@BncPath Path bncPath, @Quiet boolean quiet) {
@@ -44,8 +44,8 @@ final class BncIteratorImpl implements BncIterator {
   }
 
   @Override
-  public ImmutableList<WordTag> next() {
-    ImmutableList<WordTag> sentence = null;
+  public ImmutableList<TokenTag> next() {
+    ImmutableList<TokenTag> sentence = null;
     while(((currentReader != null && currentReader.hasNext()) || !bncDirectories.isEmpty())
         && sentence == null) {
       sentence = nextSentence();
@@ -60,12 +60,12 @@ final class BncIteratorImpl implements BncIterator {
         }
       }
     }
-    ImmutableList<WordTag> output = nextSentence;
+    ImmutableList<TokenTag> output = nextSentence;
     nextSentence = sentence;
     return output;
   }
   
-  private ImmutableList<WordTag> nextSentence() {
+  private ImmutableList<TokenTag> nextSentence() {
     if (currentReader == null || !currentReader.hasNext()) {
       try {
         Path nextPath = null;

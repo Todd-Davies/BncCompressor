@@ -14,7 +14,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 
 import edu.uchicago.lowasser.flaginjection.Flags;
-import uk.co.todddavies.bnccompressor.WordTag;
+import uk.co.todddavies.bnccompressor.TokenTag;
 import uk.co.todddavies.bnccompressor.bnc.BncIterator;
 import uk.co.todddavies.bnccompressor.bnc.BncModule;
 import uk.co.todddavies.bnccompressor.flags.BncGlobalFlagsModule;
@@ -78,7 +78,7 @@ public final class MappingBuilder {
   public void buildMap() {
     log("Building word and tag maps...");
     while(iterator.hasNext()) {
-      for (WordTag wordTag : iterator.next()) {
+      for (TokenTag wordTag : iterator.next()) {
         if (!wordMap.containsKey(wordTag.word)) wordMap.put(wordTag.word, wordCount++);
         String tag = MappingBuilderFlags.shouldCollapseTags() ? wordTag.tag.substring(0,2) : wordTag.tag;
         if (!tagMap.containsKey(tag)) tagMap.put(tag, tagCount++);

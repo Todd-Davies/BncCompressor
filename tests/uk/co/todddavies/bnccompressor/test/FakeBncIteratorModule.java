@@ -8,30 +8,30 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.TypeLiteral;
 
-import uk.co.todddavies.bnccompressor.WordTag;
+import uk.co.todddavies.bnccompressor.TokenTag;
 import uk.co.todddavies.bnccompressor.bnc.BncIterator;
 //import uk.co.todddavies.bnccompressor.endtoend.coding.EndToEndEncoderDecodeTest.FakeBncIterator;
 import uk.co.todddavies.bnccompressor.mapping.reader.MappingReaderModule.TagMap;
 import uk.co.todddavies.bnccompressor.mapping.reader.MappingReaderModule.WordMap;
 
 public final class FakeBncIteratorModule extends AbstractModule {
-  public final ImmutableList<ImmutableList<WordTag>> FAKE_BNC = ImmutableList.of(
+  public final ImmutableList<ImmutableList<TokenTag>> FAKE_BNC = ImmutableList.of(
       ImmutableList.of(
-          WordTag.from("NN1!!wait"),
-          WordTag.from("PUN!!,"),
-          WordTag.from("NN1!!wait"),
-          WordTag.from("PUN!!,"),
-          WordTag.from("NN1!!wait"),
-          WordTag.from("PUN!!!")),
+          TokenTag.from("NN1!!wait"),
+          TokenTag.from("PUN!!,"),
+          TokenTag.from("NN1!!wait"),
+          TokenTag.from("PUN!!,"),
+          TokenTag.from("NN1!!wait"),
+          TokenTag.from("PUN!!!")),
       ImmutableList.of(
-          WordTag.from("CJC!!And"),
-          WordTag.from("PUN!!,"),
-          WordTag.from("DTQ!!what"),
-          WordTag.from("VBZ!!'s"),
-          WordTag.from("AT0!!the"),
-          WordTag.from("AJ0!!other"),
-          WordTag.from("PNI!!one"),
-          WordTag.from("PUN!!.")));
+          TokenTag.from("CJC!!And"),
+          TokenTag.from("PUN!!,"),
+          TokenTag.from("DTQ!!what"),
+          TokenTag.from("VBZ!!'s"),
+          TokenTag.from("AT0!!the"),
+          TokenTag.from("AJ0!!other"),
+          TokenTag.from("PNI!!one"),
+          TokenTag.from("PUN!!.")));
   
   public static final ImmutableMap<String, Long> TAG_MAP = ImmutableMap.<String, Long>builder()
       .put("AJ0",1L).put("CJC",2L).put("DTQ",3L).put("NN1",4L)
@@ -42,10 +42,10 @@ public final class FakeBncIteratorModule extends AbstractModule {
       .put("one",6L).put("other",7L).put("the",8L).put("wait",9L).put("what", 10L).build();
   
   private static class FakeBncIterator implements BncIterator {
-    private final ImmutableList<ImmutableList<WordTag>> fakeBnc;
+    private final ImmutableList<ImmutableList<TokenTag>> fakeBnc;
     
     private int index = 0;
-    FakeBncIterator(ImmutableList<ImmutableList<WordTag>> fakeBnc) {
+    FakeBncIterator(ImmutableList<ImmutableList<TokenTag>> fakeBnc) {
       this.fakeBnc = fakeBnc;
     }
     
@@ -54,7 +54,7 @@ public final class FakeBncIteratorModule extends AbstractModule {
       return index < fakeBnc.size();
     }
     @Override
-    public ImmutableList<WordTag> next() {
+    public ImmutableList<TokenTag> next() {
       if (hasNext()) {
         return fakeBnc.get(index++);
       } else return null;

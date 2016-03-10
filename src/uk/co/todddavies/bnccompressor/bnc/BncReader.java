@@ -9,9 +9,9 @@ import java.util.Scanner;
 
 import com.google.common.collect.ImmutableList;
 
-import uk.co.todddavies.bnccompressor.WordTag;
+import uk.co.todddavies.bnccompressor.TokenTag;
 
-final class BncReader implements Iterator<ImmutableList<WordTag>>, Closeable {
+final class BncReader implements Iterator<ImmutableList<TokenTag>>, Closeable {
 
   private static final String SENT_START = "<p>";
   
@@ -31,14 +31,14 @@ final class BncReader implements Iterator<ImmutableList<WordTag>>, Closeable {
   }
 
   @Override
-  public ImmutableList<WordTag> next() {
-    ImmutableList.Builder<WordTag> out = ImmutableList.builder();
+  public ImmutableList<TokenTag> next() {
+    ImmutableList.Builder<TokenTag> out = ImmutableList.builder();
     while(fileScanner.hasNextLine()) {
       String nextLine = fileScanner.nextLine();
       if (nextLine.substring(0, 3).equals(SENT_START)) {
         break;
       } else {
-        out.add(WordTag.from(nextLine));
+        out.add(TokenTag.from(nextLine));
       }
     }
     return out.build();

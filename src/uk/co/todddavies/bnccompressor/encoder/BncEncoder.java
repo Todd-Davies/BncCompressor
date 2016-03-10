@@ -11,7 +11,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 
 import edu.uchicago.lowasser.flaginjection.Flags;
-import uk.co.todddavies.bnccompressor.WordTag;
+import uk.co.todddavies.bnccompressor.TokenTag;
 import uk.co.todddavies.bnccompressor.bnc.BncIterator;
 import uk.co.todddavies.bnccompressor.bnc.BncModule;
 import uk.co.todddavies.bnccompressor.flags.BncGlobalFlagsModule;
@@ -57,7 +57,7 @@ public final class BncEncoder {
   public void encode() {
     try (BufferedWriter writer = Files.newWriter(BncEncoderFlags.getOutputFile(), CHARSET)) {
       while(bncIterator.hasNext()) {
-        for(WordTag wt : bncIterator.next()) {
+        for(TokenTag wt : bncIterator.next()) {
           writer.write(String.format("%d %d%n", wordMap.get(wt.word), tagMap.get(wt.tag)));
         }
         writer.write(NEW_SENTENCE);

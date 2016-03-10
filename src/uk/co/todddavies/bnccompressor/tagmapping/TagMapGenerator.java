@@ -15,7 +15,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 
 import edu.uchicago.lowasser.flaginjection.Flags;
-import uk.co.todddavies.bnccompressor.WordTag;
+import uk.co.todddavies.bnccompressor.TokenTag;
 import uk.co.todddavies.bnccompressor.bnc.BncIterator;
 import uk.co.todddavies.bnccompressor.decoder.reader.BncDecoderModule;
 import uk.co.todddavies.bnccompressor.mapping.reader.MappingReaderModule;
@@ -62,7 +62,7 @@ public final class TagMapGenerator {
 
   public void buildMap() {
     while(iterator.hasNext()) {
-      for (WordTag wordTag : iterator.next()) {
+      for (TokenTag wordTag : iterator.next()) {
         Map<Long, Integer> row = map.row(wordMap.get(wordTag.word));
         Long tagKey = tagMap.get(wordTag.tag);
         if (row.containsKey(tagKey)) {

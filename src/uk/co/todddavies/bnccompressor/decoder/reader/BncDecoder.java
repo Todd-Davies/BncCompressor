@@ -8,7 +8,7 @@ import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
-import uk.co.todddavies.bnccompressor.WordTag;
+import uk.co.todddavies.bnccompressor.TokenTag;
 import uk.co.todddavies.bnccompressor.bnc.BncIterator;
 import uk.co.todddavies.bnccompressor.mapping.reader.MappingReaderModule.TagMap;
 import uk.co.todddavies.bnccompressor.mapping.reader.MappingReaderModule.WordMap;
@@ -34,14 +34,14 @@ public final class BncDecoder implements BncIterator {
   }
 
   @Override
-  public ImmutableList<WordTag> next() {
-    ImmutableList.Builder<WordTag> nextSentence = ImmutableList.builder(); 
+  public ImmutableList<TokenTag> next() {
+    ImmutableList.Builder<TokenTag> nextSentence = ImmutableList.builder(); 
     while(fileScanner.hasNextLine()) {
       String line = fileScanner.nextLine();
       if (line.equals(NEW_SENTENCE)) break;
       else {
         String[] wordTag = line.split(" ");
-        nextSentence.add(WordTag.from(wordMap.get(Long.parseLong(wordTag[0])), tagMap.get(Long.parseLong(wordTag[1]))));
+        nextSentence.add(TokenTag.from(wordMap.get(Long.parseLong(wordTag[0])), tagMap.get(Long.parseLong(wordTag[1]))));
       }
     }
     return nextSentence.build();
